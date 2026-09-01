@@ -18,7 +18,7 @@ def bootstrap_first_user(user_create: UserCreate, db:Session = Depends(get_db)):
     new_user = User(
         full_name=user_create.full_name,
         email=user_create.email,
-        password=hash_password(user_create.password),
+        hashed_password=hash_password(user_create.password),
         role=user_create.role
     )
     
@@ -42,7 +42,7 @@ def create_user(user_create:UserCreate,
     new_user = User(
         full_name=user_create.full_name,
         email=user_create.email,
-        password=hash_password(user_create.password),
+        hashed_password=hash_password(user_create.password),
         role=user_create.role
     )
     
