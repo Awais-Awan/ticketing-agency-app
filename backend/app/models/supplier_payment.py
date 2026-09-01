@@ -14,3 +14,4 @@ class SupplierPayment(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     supplier = relationship("Supplier", back_populates="payments")
+    
