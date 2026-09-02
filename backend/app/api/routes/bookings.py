@@ -10,6 +10,7 @@ from app.models import CustomerPayment
 from app.schemas.payment import PaymentCreate
 from app.schemas.booking import BookingCancel
 from app.models.booking import BookingStatus
+from app.models import Supplier
 from datetime import date as date_type
 from decimal import Decimal
 
@@ -147,17 +148,29 @@ def cancel_booking(
     if booking.status == BookingStatus.cancelled:
         raise HTTPException(status_code=400, detail="Booking is already cancelled")
 
+    # Customer side: refund whatever they paid beyond our kept fee
     received_total = sum((p.amount for p in booking.payments), Decimal("0"))
-    refund_due = received_total - cancel_in.cancellation_fee
-
-    if refund_due > 0:
+    customer_refund = received_total - cancel_in.our_cancellation_fee
+    if customer_refund > 0:
         db.add(CustomerPayment(
             booking_id=booking.id,
-            amount=-refund_due,
+            amount=-customer_refund,
             payment_date=date_type.today(),
         ))
 
-    booking.sale_amount = cancel_in.cancellation_fee
+    # Supplier side: they refund us whatever we paid them beyond their kept fee
+    supplier_paid_on_this_booking = cancel_in.supplier_cancellation_fee  # see note below
+    supplier = db.query(Supplier).filter(Supplier.id == booking.supplier_id).first()
+    supplier_refund = booking.cost_price - cancel_in.supplier_cancellation_fee
+    if supplier_refund > 0:
+        db.add(SupplierPayment(
+            supplier_id=booking.supplier_id,
+            amount=-supplier_refund,
+            payment_date=date_type.today(),
+        ))
+
+    booking.sale_amount = cancel_in.our_cancellation_fee
+    booking.cost_price = cancel_in.supplier_cancellation_fee
     booking.status = BookingStatus.cancelled
 
     db.commit()
