@@ -1,8 +1,10 @@
 from datetime import date
 from decimal import Decimal
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 from app.models.booking import BookingStatus
+from app.schemas.payment import PaymentResponse
+
 
 
 class BookingCreate(BaseModel):
@@ -34,6 +36,7 @@ class BookingResponse(BaseModel):
     received_payment: Decimal
     pending_amount: Decimal
     status: BookingStatus
+    payments: List[PaymentResponse]
 
     class Config:
         from_attributes = True
@@ -51,4 +54,5 @@ class BookingUpdate(BaseModel):
     
 
 class BookingCancel(BaseModel):
-    cancellation_fee: Decimal = Decimal("0")
+    our_cancellation_fee: Decimal = Decimal("0")
+    supplier_cancellation_fee: Decimal = Decimal("0")

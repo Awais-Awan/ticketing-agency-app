@@ -1,6 +1,7 @@
 from decimal import Decimal
 from app.models import Booking
 from app.schemas.booking import BookingResponse
+from app.schemas.payment import PaymentResponse
 
 
 def booking_to_response(booking: Booking) -> BookingResponse:
@@ -22,5 +23,9 @@ def booking_to_response(booking: Booking) -> BookingResponse:
         profit=profit,
         received_payment=received_total,
         pending_amount=pending,
-        status=booking.status
+        status=booking.status,
+        payments=[
+            PaymentResponse(id=p.id, amount=p.amount, payment_date=p.payment_date)
+            for p in booking.payments
+        ],
     )
