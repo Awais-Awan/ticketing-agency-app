@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import apiClient from "../api/client";
 import styles from "./Suppliers.module.css";
+import { Link } from "react-router-dom";
 
 function Suppliers() {
   const [suppliers, setSuppliers] = useState([]);
@@ -65,7 +66,7 @@ function Suppliers() {
           <tbody>
             {suppliers.map((s) => (
               <tr key={s.id}>
-                <td>{s.name}</td>
+                <td><Link to={`/suppliers/${s.id}`} className={styles.link}>{s.name}</Link></td>
                 <td>{s.email}</td>
                 <td>{s.phone}</td>
                 <td>{s.address}</td>

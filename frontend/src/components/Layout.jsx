@@ -16,6 +16,9 @@ function Layout({ children }) {
       <aside className={styles.sidebar}>
         <div className={styles.brand}>AL-MAARIB Travels</div>
         <nav className={styles.nav}>
+          <NavLink to="/dashboard" className={({ isActive }) => isActive ? styles.navItemActive : styles.navItem}>
+            Dashboard
+          </NavLink>
           <NavLink to="/bookings/" className={({ isActive }) => isActive ? styles.navItemActive : styles.navItem}>
             Bookings
           </NavLink>
@@ -24,6 +27,9 @@ function Layout({ children }) {
           </NavLink>
           <NavLink to="/customers" className={({ isActive }) => isActive ? styles.navItemActive : styles.navItem}>
             Customers
+          </NavLink>
+          <NavLink to="/reports" className={({ isActive }) => isActive ? styles.navItemActive : styles.navItem}>
+            Reports
           </NavLink>
         </nav>
       </aside>

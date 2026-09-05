@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import apiClient from "../api/client";
 import styles from "./BookingForm.module.css";
 
@@ -17,6 +18,7 @@ const emptyForm = {
 };
 
 function BookingForm() {
+  const navigate = useNavigate();
   const [suppliers, setSuppliers] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState("");
@@ -71,6 +73,14 @@ function BookingForm() {
 
   return (
     <div>
+      <button onClick={() => navigate("/bookings")} className={styles.backLink}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Back to bookings</span>
+      </button>
+
       <h2 className={styles.pageTitle}>New booking</h2>
 
       <form onSubmit={handleSubmit} className={styles.form}>

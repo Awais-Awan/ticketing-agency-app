@@ -5,6 +5,14 @@ import Layout from "./components/Layout";
 import Suppliers from "./pages/Suppliers";
 import BookingForm from "./pages/BookingForm";
 import BookingsList from "./pages/BookingsList";
+import BookingDetail from "./pages/BookingDetail";
+import CustomersList from "./pages/CustomersList";
+import CustomerLedger from "./pages/CustomerLedger";
+import SupplierDetail from "./pages/SupplierDetail";
+import Dashboard from "./pages/Dashboard";
+import Reports from "./pages/Reports";
+
+
 
 
 function BookingsPlaceholder() {
@@ -40,6 +48,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/bookings/:id"
+        element={
+          <ProtectedRoute>
+            <BookingDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/suppliers"
         element={
           <ProtectedRoute>
@@ -47,7 +63,42 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route path="*" element={<Navigate to="/bookings" />} />
+      <Route 
+        path="/customers" 
+        element={
+          <ProtectedRoute>
+            <CustomersList />
+          </ProtectedRoute>} />
+
+      <Route 
+        path="/customers/:id" 
+        element={
+          <ProtectedRoute>
+            <CustomerLedger />
+          </ProtectedRoute>} />
+
+      <Route 
+        path="/suppliers/:id" 
+        element={
+          <ProtectedRoute>
+            <SupplierDetail />
+          </ProtectedRoute>} />
+
+      <Route 
+        path="/dashboard" 
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>} />
+
+      <Route 
+        path="/reports" 
+        element={
+          <ProtectedRoute>
+            <Reports />
+          </ProtectedRoute>} />
+
+      <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
   );
 }

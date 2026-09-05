@@ -1,3 +1,20 @@
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--color-slate);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 16px;
+}
+
+.backLink svg {
+  flex-shrink: 0;
+}
+
 .pageTitle {
   margin: 0 0 20px;
   font-size: 18px;

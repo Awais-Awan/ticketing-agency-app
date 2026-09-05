@@ -26,7 +26,7 @@ function Login() {
 
       const { access_token } = response.data;
       login(access_token, { email });
-      navigate("/bookings");
+      navigate("/dashboard");
     } catch (err) {
       setError("Incorrect email or password");
     }

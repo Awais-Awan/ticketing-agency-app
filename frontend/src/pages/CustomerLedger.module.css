@@ -1,0 +1,101 @@
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--color-slate);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 16px;
+}
+
+.backLink svg {
+  flex-shrink: 0;
+}
+
+.pageTitle {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.phone {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: var(--color-slate);
+}
+
+.summaryCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  max-width: 240px;
+}
+
+.summaryLabel {
+  font-size: 12px;
+  color: var(--color-slate);
+  margin-bottom: 4px;
+}
+
+.summaryCard span:last-child {
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.positive {
+  color: var(--color-green);
+}
+
+.negative {
+  color: var(--color-amber);
+}
+
+.sectionLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-slate);
+  margin: 0 0 12px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table th, .table td {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 13px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th {
+  color: var(--color-slate);
+  font-weight: 500;
+}
+
+.numCol {
+  text-align: right;
+}
+
+.link {
+  color: var(--color-navy);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
