@@ -1,0 +1,124 @@
+.pageTitle {
+  margin: 0 0 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.form {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+}
+
+.sectionLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-slate);
+  margin: 0 0 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.sectionLabel:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  font-size: 13px;
+  color: var(--color-slate);
+  margin-bottom: 6px;
+}
+
+.field input, .field select {
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  width: 100%;
+}
+
+.preview {
+  display: flex;
+  gap: 32px;
+  padding: 16px 0;
+  margin: 8px 0 16px;
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.previewLabel {
+  display: block;
+  font-size: 12px;
+  color: var(--color-slate);
+}
+
+.previewValue {
+  display: block;
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-navy);
+}
+
+.positive {
+  color: var(--color-green);
+}
+
+.negative {
+  color: var(--color-amber);
+}
+
+.error {
+  color: var(--color-amber);
+  background: var(--color-amber-bg);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.success {
+  color: var(--color-green);
+  background: var(--color-green-bg);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  background: var(--color-navy);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .form {
+    padding: 16px;
+  }
+  .submitButton {
+    width: 100%;
+  }
+}

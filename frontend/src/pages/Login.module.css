@@ -1,0 +1,74 @@
+.loginPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: var(--color-bg);
+}
+
+.loginCard {
+  background: var(--color-surface);
+  padding: 2.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  width: 340px;
+}
+
+.loginTitle {
+  margin: 0 0 1.5rem;
+  color: var(--color-navy);
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.loginField {
+  margin-bottom: 1.25rem;
+}
+
+.loginField label {
+  display: block;
+  font-size: 13px;
+  color: var(--color-slate);
+  margin-bottom: 6px;
+}
+
+.loginField input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-family: var(--font-sans);
+}
+
+.loginField input:focus {
+  outline: none;
+  border-color: var(--color-navy);
+  box-shadow: 0 0 0 3px rgba(18, 32, 58, 0.1);
+}
+
+.loginError {
+  color: var(--color-amber);
+  background: var(--color-amber-bg);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 1rem;
+}
+
+.loginButton {
+  width: 100%;
+  padding: 11px;
+  background: var(--color-navy);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  background: var(--color-navy-light);
+}

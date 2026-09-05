@@ -1,0 +1,77 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.newButton {
+  padding: 8px 16px;
+  background: var(--color-navy);
+  color: white;
+  border-radius: var(--radius);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.empty {
+  color: var(--color-slate);
+  font-size: 14px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table th, .table td {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 13px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th {
+  color: var(--color-slate);
+  font-weight: 500;
+}
+
+.numCol {
+  text-align: right;
+}
+
+.link {
+  color: var(--color-navy);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.statusActive {
+  color: var(--color-green);
+  background: var(--color-green-bg);
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.statusCancelled {
+  color: var(--color-slate);
+  background: var(--color-bg);
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
