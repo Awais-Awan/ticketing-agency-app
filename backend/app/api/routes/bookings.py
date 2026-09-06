@@ -1,19 +1,16 @@
 from datetime import date as date_type
+from decimal import Decimal
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+
 from app.api.deps import get_db, get_current_user
 from app.models import Customer, Booking, CustomerPayment, SupplierPayment
-from app.schemas.booking import BookingCreate, BookingResponse, BookingUpdate
-from app.services.booking import booking_to_response
-from typing import List
-from app.models import CustomerPayment
-from app.schemas.payment import PaymentCreate
-from app.schemas.booking import BookingCancel
 from app.models.booking import BookingStatus
-from app.models import Supplier
-from datetime import date as date_type
-from decimal import Decimal
-
+from app.schemas.booking import BookingCreate, BookingResponse, BookingUpdate, BookingCancel
+from app.schemas.payment import PaymentCreate
+from app.services.booking import booking_to_response
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
 
@@ -29,7 +26,7 @@ def create_booking(
     if not customer:
         customer = Customer(name=booking_in.customer_name, phone=booking_in.phone_number)
         db.add(customer)
-        db.flush()  # assigns customer.id without fully committing yet
+        db.flush()
 
     # Step 2: create the booking row
     booking = Booking(
@@ -43,7 +40,7 @@ def create_booking(
         cost_price=booking_in.cost_price,
     )
     db.add(booking)
-    db.flush()  # assigns booking.id
+    db.flush()
 
     # Step 3: optionally log the first customer payment
     if booking_in.received_payment:
@@ -85,6 +82,32 @@ def get_booking(
     return booking_to_response(booking)
 
 
+@router.patch("/{booking_id}", response_model=BookingResponse)
+def update_booking(
+    booking_id: int,
+    booking_in: BookingUpdate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    booking = db.query(Booking).filter(Booking.id == booking_id).first()
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+
+    update_data = booking_in.model_dump(exclude_unset=True)
+
+    if "customer_name" in update_data:
+        booking.customer.name = update_data.pop("customer_name")
+    if "phone_number" in update_data:
+        booking.customer.phone = update_data.pop("phone_number")
+
+    for field, value in update_data.items():
+        setattr(booking, field, value)
+
+    db.commit()
+    db.refresh(booking)
+    return booking_to_response(booking)
+
+
 @router.post("/{booking_id}/payments", response_model=BookingResponse, status_code=status.HTTP_201_CREATED)
 def add_customer_payment(
     booking_id: int,
@@ -107,34 +130,6 @@ def add_customer_payment(
     return booking_to_response(booking)
 
 
-@router.patch("/{booking_id}", response_model=BookingResponse)
-def update_booking(
-    booking_id: int,
-    booking_in: BookingUpdate,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user),
-):
-    booking = db.query(Booking).filter(Booking.id == booking_id).first()
-    if not booking:
-        raise HTTPException(status_code=404, detail="Booking not found")
-
-    update_data = booking_in.model_dump(exclude_unset=True)
-
-    # Customer fields go onto the linked Customer row, not the booking
-    if "customer_name" in update_data:
-        booking.customer.name = update_data.pop("customer_name")
-    if "phone_number" in update_data:
-        booking.customer.phone = update_data.pop("phone_number")
-
-    # Everything left over are real Booking columns
-    for field, value in update_data.items():
-        setattr(booking, field, value)
-
-    db.commit()
-    db.refresh(booking)
-    return booking_to_response(booking)
-
-
 @router.post("/{booking_id}/cancel", response_model=BookingResponse)
 def cancel_booking(
     booking_id: int,
@@ -148,28 +143,14 @@ def cancel_booking(
     if booking.status == BookingStatus.cancelled:
         raise HTTPException(status_code=400, detail="Booking is already cancelled")
 
-    # Customer side: refund whatever they paid beyond our kept fee
-    received_total = sum((p.amount for p in booking.payments), Decimal("0"))
-    customer_refund = received_total - cancel_in.our_cancellation_fee
-    if customer_refund > 0:
-        db.add(CustomerPayment(
-            booking_id=booking.id,
-            amount=-customer_refund,
-            payment_date=date_type.today(),
-        ))
-
-    # Supplier side: they refund us whatever we paid them beyond their kept fee
-    supplier_paid_on_this_booking = cancel_in.supplier_cancellation_fee  # see note below
-    supplier = db.query(Supplier).filter(Supplier.id == booking.supplier_id).first()
-    supplier_refund = booking.cost_price - cancel_in.supplier_cancellation_fee
-    if supplier_refund > 0:
-        db.add(SupplierPayment(
-            supplier_id=booking.supplier_id,
-            amount=-supplier_refund,
-            payment_date=date_type.today(),
-        ))
-
-    booking.sale_amount = cancel_in.our_cancellation_fee
+    # Cancellation only adjusts what's owed - it never assumes a refund or a
+    # supplier repayment has already happened. The customer is charged the
+    # combined penalty (ours + the supplier's), since the supplier's fee is a
+    # real cost being passed through, not one the agency should silently absorb.
+    # Any negative pending_amount / balance_owed that results just means money
+    # is owed back - the actual transaction gets recorded later, for real, as
+    # its own payment (a negative amount) once it's actually paid.
+    booking.sale_amount = cancel_in.our_cancellation_fee + cancel_in.supplier_cancellation_fee
     booking.cost_price = cancel_in.supplier_cancellation_fee
     booking.status = BookingStatus.cancelled
 

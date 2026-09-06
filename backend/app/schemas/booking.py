@@ -4,6 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from app.models.booking import BookingStatus
 from app.schemas.payment import PaymentResponse
+from datetime import datetime
 
 
 
@@ -37,6 +38,7 @@ class BookingResponse(BaseModel):
     pending_amount: Decimal
     status: BookingStatus
     payments: List[PaymentResponse]
+    created_at: datetime
 
     class Config:
         from_attributes = True

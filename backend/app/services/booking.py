@@ -28,4 +28,5 @@ def booking_to_response(booking: Booking) -> BookingResponse:
             PaymentResponse(id=p.id, amount=p.amount, payment_date=p.payment_date)
             for p in booking.payments
         ],
+        created_at=booking.created_at,
     )
