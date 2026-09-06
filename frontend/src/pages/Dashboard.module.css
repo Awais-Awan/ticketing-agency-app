@@ -93,3 +93,19 @@
 .link:hover {
   text-decoration: underline;
 }
+
+.metricCard {
+  box-shadow: var(--shadow-sm);
+}
+
+.table {
+  box-shadow: var(--shadow-sm);
+}
+
+.row {
+  transition: background-color var(--transition);
+}
+
+.row:hover {
+  background-color: var(--color-bg);
+}

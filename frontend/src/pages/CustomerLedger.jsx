@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import apiClient from "../api/client";
+import { generateCustomerStatementPdf } from "../utils/pdf";
+import Spinner from "../components/Spinner";
+import EmptyState from "../components/EmptyState";
 import styles from "./CustomerLedger.module.css";
 
 function formatMoney(value) {
@@ -20,8 +23,10 @@ function CustomerLedger() {
     });
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!customer) return <p>Customer not found</p>;
+  if (loading) return <Spinner />;
+  if (!customer) return <EmptyState message="Customer not found" />;
+
+  const totalPending = parseFloat(customer.total_pending);
 
   return (
     <div>
@@ -33,39 +38,86 @@ function CustomerLedger() {
         <span>Back to customers</span>
       </button>
 
-      <h2 className={styles.pageTitle}>{customer.name}</h2>
-      <p className={styles.phone}>{customer.phone}</p>
-
-      <div className={styles.summaryCard}>
-        <span className={styles.summaryLabel}>Total pending</span>
-        <span className={customer.total_pending > 0 ? styles.negative : styles.positive}>
-          {formatMoney(customer.total_pending)}
-        </span>
+      <div className={styles.header}>
+        <div>
+          <h2 className={styles.pageTitle}>{customer.name}</h2>
+          <p className={styles.phone}>{customer.phone}</p>
+        </div>
+        <button onClick={() => generateCustomerStatementPdf(customer)} className={styles.exportButton}>
+          Export statement
+        </button>
       </div>
 
-      <h3 className={styles.sectionLabel}>Bookings</h3>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>PNR</th>
-            <th className={styles.numCol}>Sale amount</th>
-            <th className={styles.numCol}>Received</th>
-            <th className={styles.numCol}>Pending</th>
-          </tr>
-        </thead>
-        <tbody>
-          {customer.bookings.map((b) => (
-            <tr key={b.id}>
-              <td>
-                <Link to={`/bookings/${b.id}`} className={styles.link}>{b.pnr_no}</Link>
-              </td>
-              <td className={styles.numCol}>{formatMoney(b.sale_amount)}</td>
-              <td className={styles.numCol}>{formatMoney(b.received_payment)}</td>
-              <td className={styles.numCol}>{formatMoney(b.pending_amount)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className={styles.summaryRow}>
+        <div className={styles.summaryCard}>
+          <span className={styles.summaryLabel}>Total pending</span>
+          <span className={totalPending > 0 ? styles.negative : styles.positive}>
+            {formatMoney(Math.max(totalPending, 0))}
+          </span>
+        </div>
+        {totalPending < 0 && (
+          <div className={styles.summaryCard}>
+            <span className={styles.summaryLabel}>Payable to customer</span>
+            <span className={styles.negative}>{formatMoney(Math.abs(totalPending))}</span>
+          </div>
+        )}
+      </div>
+
+      <div className={styles.columns}>
+        <div>
+          <h3 className={styles.sectionLabel}>Bookings</h3>
+          {customer.bookings.length === 0 ? (
+            <EmptyState message="No bookings yet" />
+          ) : (
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>PNR</th>
+                  <th className={styles.numCol}>Sale amount</th>
+                  <th className={styles.numCol}>Received</th>
+                  <th className={styles.numCol}>Pending</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customer.bookings.map((b) => (
+                  <tr key={b.id} className={styles.row}>
+                    <td><Link to={`/bookings/${b.id}`} className={styles.link}>{b.pnr_no}</Link></td>
+                    <td className={styles.numCol}>{formatMoney(b.sale_amount)}</td>
+                    <td className={styles.numCol}>{formatMoney(b.received_payment)}</td>
+                    <td className={styles.numCol}>{formatMoney(b.pending_amount)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        <div>
+          <h3 className={styles.sectionLabel}>Payments received</h3>
+          {customer.payments.length === 0 ? (
+            <EmptyState message="No payments yet" />
+          ) : (
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>PNR</th>
+                  <th>Date</th>
+                  <th className={styles.numCol}>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customer.payments.map((p) => (
+                  <tr key={p.id} className={styles.row}>
+                    <td>{p.pnr_no}</td>
+                    <td>{p.payment_date}</td>
+                    <td className={styles.numCol}>{formatMoney(p.amount)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

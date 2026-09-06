@@ -131,6 +131,10 @@
   width: 100%;
 }
 
+.form {
+  box-shadow: var(--shadow-sm);
+}
+
 @media (max-width: 600px) {
   .form {
     padding: 16px;

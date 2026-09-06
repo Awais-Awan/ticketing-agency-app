@@ -3,6 +3,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recha
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import apiClient from "../api/client";
+import Spinner from "../components/Spinner";
+import EmptyState from "../components/EmptyState";
 import styles from "./Reports.module.css";
 
 function toDateStr(d) {
@@ -49,7 +51,7 @@ function Reports() {
     return { start: customStart, end: customEnd };
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Spinner />;
 
   const { start, end } = getRange();
 
@@ -166,7 +168,7 @@ function Reports() {
       <h3 className={styles.sectionLabel}>Sales trend</h3>
       <div className={styles.chartCard}>
         {chartData.length === 0 ? (
-          <p className={styles.empty}>No bookings in this range.</p>
+          <EmptyState message="No bookings in this range." />
         ) : (
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={chartData}>
@@ -181,7 +183,7 @@ function Reports() {
 
       <h3 className={styles.sectionLabel}>Bookings in range</h3>
       {filtered.length === 0 ? (
-        <p className={styles.empty}>No bookings in this range.</p>
+        <EmptyState message="No bookings in this range." />
       ) : (
         <table className={styles.table}>
           <thead>

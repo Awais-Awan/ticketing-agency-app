@@ -144,3 +144,43 @@
   font-size: 13px;
   margin-bottom: 12px;
 }
+
+.summaryRow {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.exportButton {
+  padding: 8px 16px;
+  background: var(--color-navy);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.summaryCard {
+  box-shadow: var(--shadow-sm);
+}
+
+.table {
+  box-shadow: var(--shadow-sm);
+}
+
+.row {
+  transition: background-color var(--transition);
+}
+
+.row:hover {
+  background-color: var(--color-bg);
+}

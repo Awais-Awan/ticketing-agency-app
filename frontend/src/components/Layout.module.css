@@ -118,3 +118,18 @@
     padding: 16px;
   }
 }
+
+.navItem, .navItemActive {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.content {
+  animation: pageFadeIn 150ms ease;
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

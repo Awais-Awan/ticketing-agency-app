@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../api/client";
+import Spinner from "../components/Spinner";
+import EmptyState from "../components/EmptyState";
 import styles from "./Dashboard.module.css";
 
 function formatMoney(value) {
@@ -23,7 +25,7 @@ function Dashboard() {
     });
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Spinner />;
 
   const activeBookings = bookings.filter((b) => b.status !== "cancelled");
   const totalSales = activeBookings.reduce((sum, b) => sum + parseFloat(b.sale_amount), 0);
@@ -70,7 +72,7 @@ function Dashboard() {
         <div>
           <h3 className={styles.sectionLabel}>Pending payments</h3>
           {pendingBookings.length === 0 ? (
-            <p className={styles.empty}>Nothing pending.</p>
+            <EmptyState message="Nothing pending." />
           ) : (
             <table className={styles.table}>
               <thead>
@@ -82,7 +84,7 @@ function Dashboard() {
               </thead>
               <tbody>
                 {pendingBookings.map((b) => (
-                  <tr key={b.id}>
+                  <tr key={b.id} className={styles.row}>
                     <td><Link to={`/bookings/${b.id}`} className={styles.link}>{b.pnr_no}</Link></td>
                     <td>{b.customer_name}</td>
                     <td className={styles.numCol}>{formatMoney(parseFloat(b.pending_amount))}</td>
@@ -96,7 +98,7 @@ function Dashboard() {
         <div>
           <h3 className={styles.sectionLabel}>Supplier dues</h3>
           {suppliersOwed.length === 0 ? (
-            <p className={styles.empty}>Nothing owed.</p>
+            <EmptyState message="Nothing owed." />
           ) : (
             <table className={styles.table}>
               <thead>
@@ -107,7 +109,7 @@ function Dashboard() {
               </thead>
               <tbody>
                 {suppliersOwed.map((s) => (
-                  <tr key={s.id}>
+                  <tr key={s.id} className={styles.row}>
                     <td><Link to={`/suppliers/${s.id}`} className={styles.link}>{s.name}</Link></td>
                     <td className={styles.numCol}>{formatMoney(parseFloat(s.balance_owed))}</td>
                   </tr>

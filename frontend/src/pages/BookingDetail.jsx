@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import apiClient from "../api/client";
+import Spinner from "../components/Spinner";
+import EmptyState from "../components/EmptyState";
 import styles from "./BookingDetail.module.css";
 
 function formatMoney(value) {
@@ -100,17 +102,17 @@ function BookingDetail() {
     }
   }
 
-  if (loading) return <p>Loading...</p>;
-  if (!booking) return <p>Booking not found</p>;
+  if (loading) return <Spinner />;
+  if (!booking) return <EmptyState message="Booking not found" />;
 
   return (
     <div>
       <button onClick={() => navigate(-1)} className={styles.backLink}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        <span>Back to bookings</span>
+        <span>Back</span>
       </button>
 
       <div className={styles.header}>
@@ -209,26 +211,26 @@ function BookingDetail() {
       )}
 
       <h3 className={styles.sectionLabel}>Payment history</h3>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th className={styles.numCol}>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {booking.payments.length === 0 ? (
-            <tr><td colSpan={2} className={styles.empty}>No payments yet</td></tr>
-          ) : (
-            booking.payments.map((p) => (
-              <tr key={p.id}>
+      {booking.payments.length === 0 ? (
+        <EmptyState message="No payments yet" />
+      ) : (
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th className={styles.numCol}>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {booking.payments.map((p) => (
+              <tr key={p.id} className={styles.row}>
                 <td>{p.payment_date}</td>
                 <td className={styles.numCol}>{formatMoney(p.amount)}</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {booking.status !== "cancelled" && (
         <form onSubmit={handleAddPayment} className={styles.paymentForm}>

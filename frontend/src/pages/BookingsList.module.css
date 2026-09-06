@@ -75,3 +75,15 @@
   padding: 2px 8px;
   border-radius: 6px;
 }
+
+.table {
+  box-shadow: var(--shadow-sm);
+}
+
+.row {
+  transition: background-color var(--transition);
+}
+
+.row:hover {
+  background-color: var(--color-bg);
+}

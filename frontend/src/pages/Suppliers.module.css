@@ -72,3 +72,25 @@
 .numCol {
   text-align: right;
 }
+
+.table {
+  box-shadow: var(--shadow-sm);
+}
+
+.row {
+  transition: background-color var(--transition);
+}
+
+.row:hover {
+  background-color: var(--color-bg);
+}
+
+.link {
+  color: var(--color-navy);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
