@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import apiClient from "../api/client";
-import styles from "./Suppliers.module.css";
 import { Link } from "react-router-dom";
+import apiClient from "../api/client";
+import Spinner from "../components/Spinner";
+import EmptyState from "../components/EmptyState";
+import styles from "./Suppliers.module.css";
 
 function Suppliers() {
   const [suppliers, setSuppliers] = useState([]);
@@ -51,7 +53,9 @@ function Suppliers() {
       {formError && <p className={styles.formError}>{formError}</p>}
 
       {loading ? (
-        <p>Loading...</p>
+        <Spinner />
+      ) : suppliers.length === 0 ? (
+        <EmptyState message="No suppliers yet. Add one above to get started." />
       ) : (
         <table className={styles.table}>
           <thead>
@@ -65,7 +69,7 @@ function Suppliers() {
           </thead>
           <tbody>
             {suppliers.map((s) => (
-              <tr key={s.id}>
+              <tr key={s.id} className={styles.row}>
                 <td><Link to={`/suppliers/${s.id}`} className={styles.link}>{s.name}</Link></td>
                 <td>{s.email}</td>
                 <td>{s.phone}</td>

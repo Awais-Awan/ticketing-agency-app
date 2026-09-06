@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import apiClient from "../api/client";
+import { generateSupplierStatementPdf } from "../utils/pdf";
+import Spinner from "../components/Spinner";
+import EmptyState from "../components/EmptyState";
 import styles from "./SupplierDetail.module.css";
 
 function formatMoney(value) {
@@ -43,8 +46,10 @@ function SupplierDetail() {
     }
   }
 
-  if (loading) return <p>Loading...</p>;
-  if (!supplier) return <p>Supplier not found</p>;
+  if (loading) return <Spinner />;
+  if (!supplier) return <EmptyState message="Supplier not found" />;
+
+  const balanceOwed = parseFloat(supplier.balance_owed);
 
   return (
     <div>
@@ -53,17 +58,32 @@ function SupplierDetail() {
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        <span>Back to suppliers</span>
+        <span>Back</span>
       </button>
 
-      <h2 className={styles.pageTitle}>{supplier.name}</h2>
-      <p className={styles.contact}>{supplier.email} · {supplier.phone}</p>
+      <div className={styles.header}>
+        <div>
+          <h2 className={styles.pageTitle}>{supplier.name}</h2>
+          <p className={styles.contact}>{supplier.email} · {supplier.phone}</p>
+        </div>
+        <button onClick={() => generateSupplierStatementPdf(supplier)} className={styles.exportButton}>
+          Export statement
+        </button>
+      </div>
 
-      <div className={styles.summaryCard}>
-        <span className={styles.summaryLabel}>Balance owed</span>
-        <span className={supplier.balance_owed > 0 ? styles.negative : styles.positive}>
-          {formatMoney(supplier.balance_owed)}
-        </span>
+      <div className={styles.summaryRow}>
+        <div className={styles.summaryCard}>
+          <span className={styles.summaryLabel}>Balance owed</span>
+          <span className={balanceOwed > 0 ? styles.negative : styles.positive}>
+            {formatMoney(Math.max(balanceOwed, 0))}
+          </span>
+        </div>
+        {balanceOwed < 0 && (
+          <div className={styles.summaryCard}>
+            <span className={styles.summaryLabel}>Payable by supplier</span>
+            <span className={styles.negative}>{formatMoney(Math.abs(balanceOwed))}</span>
+          </div>
+        )}
       </div>
 
       {error && <p className={styles.error}>{error}</p>}
@@ -71,50 +91,50 @@ function SupplierDetail() {
       <div className={styles.columns}>
         <div>
           <h3 className={styles.sectionLabel}>Bookings (tickets bought)</h3>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>PNR</th>
-                <th className={styles.numCol}>Cost price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {supplier.bookings.length === 0 ? (
-                <tr><td colSpan={2} className={styles.empty}>No bookings yet</td></tr>
-              ) : (
-                supplier.bookings.map((b) => (
-                  <tr key={b.id}>
+          {supplier.bookings.length === 0 ? (
+            <EmptyState message="No bookings yet" />
+          ) : (
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>PNR</th>
+                  <th className={styles.numCol}>Cost price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {supplier.bookings.map((b) => (
+                  <tr key={b.id} className={styles.row}>
                     <td><Link to={`/bookings/${b.id}`} className={styles.link}>{b.pnr_no}</Link></td>
                     <td className={styles.numCol}>{formatMoney(b.cost_price)}</td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
 
         <div>
           <h3 className={styles.sectionLabel}>Payments made</h3>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th className={styles.numCol}>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {supplier.payments.length === 0 ? (
-                <tr><td colSpan={2} className={styles.empty}>No payments yet</td></tr>
-              ) : (
-                supplier.payments.map((p) => (
-                  <tr key={p.id}>
+          {supplier.payments.length === 0 ? (
+            <EmptyState message="No payments yet" />
+          ) : (
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th className={styles.numCol}>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {supplier.payments.map((p) => (
+                  <tr key={p.id} className={styles.row}>
                     <td>{p.payment_date}</td>
                     <td className={styles.numCol}>{formatMoney(p.amount)}</td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          )}
 
           <form onSubmit={handleAddPayment} className={styles.paymentForm}>
             <input

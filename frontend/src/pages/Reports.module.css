@@ -158,3 +158,15 @@
   padding: 2px 8px;
   border-radius: 6px;
 }
+
+.metricCard {
+  box-shadow: var(--shadow-sm);
+}
+
+.chartCard {
+  box-shadow: var(--shadow-sm);
+}
+
+.table {
+  box-shadow: var(--shadow-sm);
+}

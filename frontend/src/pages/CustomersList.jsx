@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../api/client";
+import Spinner from "../components/Spinner";
+import EmptyState from "../components/EmptyState";
 import styles from "./CustomersList.module.css";
 
 function CustomersList() {
@@ -19,9 +21,9 @@ function CustomersList() {
       <h2 className={styles.pageTitle}>Customers</h2>
 
       {loading ? (
-        <p>Loading...</p>
+        <Spinner />
       ) : customers.length === 0 ? (
-        <p className={styles.empty}>No customers yet.</p>
+        <EmptyState message="No customers yet." />
       ) : (
         <table className={styles.table}>
           <thead>
@@ -32,7 +34,7 @@ function CustomersList() {
           </thead>
           <tbody>
             {customers.map((c) => (
-              <tr key={c.id}>
+              <tr key={c.id} className={styles.row}>
                 <td>
                   <Link to={`/customers/${c.id}`} className={styles.link}>{c.name}</Link>
                 </td>
