@@ -170,3 +170,9 @@
 .table {
   box-shadow: var(--shadow-sm);
 }
+
+.rangeDisplay {
+  font-size: 13px;
+  color: var(--color-slate);
+  margin: 0 0 16px;
+}

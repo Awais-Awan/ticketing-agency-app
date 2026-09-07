@@ -19,7 +19,32 @@ function Layout() {
   return (
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
-        <div className={styles.brand}>AL-MAARIB Travels</div>
+<div className={styles.brand} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', height: '32px' }}>
+  <span className={styles.brandName}>AL-MAARIB Travels</span>
+  
+  {/* Canvas height bumped to 72px to hold the ultra-wide, tall loop safely without clipping */}
+  <svg width="210" height="72" viewBox="0 0 210 72" className={styles.brandPath} style={{ position: 'absolute', top: '5px', left: 0, width: '210px', height: '72px', pointerEvents: 'none' }}>
+    {/* Massive loop path: stretches much wider (X coordinates 50 to 95) and deeper (Y=58) */}
+    <path 
+      d="M 5,58 C 30,58 45,58 55,44 C 82,24 95,2 70,2 C 45,2 50,58 90,58 C 130,58 155,44 200,44" 
+      fill="none" 
+      stroke="#F7F8FA" 
+      strokeOpacity="0.40" 
+      strokeWidth="2.5" 
+      strokeDasharray="5 5" 
+    />
+    
+    {/* Plane resting at the exit point of the massive loop line (Y=44) */}
+    <g transform="translate(200,44) rotate(-2) scale(0.7)">
+      <path 
+        d="M14 0 L3 -2 L-6 -11 L-2 -3 L-9 -2 L-14 -5 L-11 -2 L-14 0 L-11 2 L-14 5 L-9 2 L-2 3 L-6 11 L3 2 Z" 
+        fill="#F7F8FA" 
+        fillOpacity="0.8" 
+      />
+    </g>
+  </svg>
+</div>
+
         <nav className={styles.nav}>
           <NavLink to="/dashboard" className={({ isActive }) => isActive ? styles.navItemActive : styles.navItem}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>

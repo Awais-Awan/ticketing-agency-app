@@ -25,6 +25,8 @@ class BookingCreate(BaseModel):
 class BookingResponse(BaseModel):
     id: int
     pnr_no: str
+    customer_id: int
+    supplier_id: int
     customer_name: str
     phone_number: str
     supplier_id: int
@@ -39,6 +41,7 @@ class BookingResponse(BaseModel):
     status: BookingStatus
     payments: List[PaymentResponse]
     created_at: datetime
+    supplier_name: str
 
     class Config:
         from_attributes = True

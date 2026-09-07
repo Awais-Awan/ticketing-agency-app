@@ -2,13 +2,24 @@
 venv/
 __pycache__/
 *.pyc
+*.pyo
+.pytest_cache/
 
 # Environment variables / secrets
 .env
+.env.local
+frontend/.env
 
-# Node (for when we add the frontend)
+# Node
 node_modules/
 dist/
+npm-debug.log*
 
-# OS junk
+# Docker
+docker-compose.override.yml
+
+# Editor / OS junk
 .DS_Store
+.vscode/
+.idea/
+*.swp

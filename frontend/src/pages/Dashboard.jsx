@@ -27,14 +27,13 @@ function Dashboard() {
 
   if (loading) return <Spinner />;
 
-  const activeBookings = bookings.filter((b) => b.status !== "cancelled");
-  const totalSales = activeBookings.reduce((sum, b) => sum + parseFloat(b.sale_amount), 0);
-  const totalProfit = activeBookings.reduce((sum, b) => sum + parseFloat(b.profit), 0);
-  const totalReceivable = activeBookings.reduce((sum, b) => sum + Math.max(parseFloat(b.pending_amount), 0), 0);
+  const totalSales = bookings.reduce((sum, b) => sum + parseFloat(b.sale_amount), 0);
+  const totalProfit = bookings.reduce((sum, b) => sum + parseFloat(b.profit), 0);
+  const totalReceivable = bookings.reduce((sum, b) => sum + Math.max(parseFloat(b.pending_amount), 0), 0);
   const totalPayable = suppliers.reduce((sum, s) => sum + Math.max(parseFloat(s.balance_owed), 0), 0);
 
-  const pendingBookings = activeBookings
-    .filter((b) => parseFloat(b.pending_amount) > 0)
+  const pendingBookings = bookings
+    .filter((b) => b.status !== "cancelled" && parseFloat(b.pending_amount) > 0)
     .sort((a, b) => parseFloat(b.pending_amount) - parseFloat(a.pending_amount))
     .slice(0, 8);
 
