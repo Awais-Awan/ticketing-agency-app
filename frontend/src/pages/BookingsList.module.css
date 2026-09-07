@@ -87,3 +87,7 @@
 .row:hover {
   background-color: var(--color-bg);
 }
+
+.tableWrap {
+  overflow-x: auto;
+}

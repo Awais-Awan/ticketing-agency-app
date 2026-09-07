@@ -8,7 +8,10 @@ import EmptyState from "../components/EmptyState";
 import styles from "./Reports.module.css";
 
 function toDateStr(d) {
-  return d.toISOString().slice(0, 10);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function formatMoney(value) {
@@ -17,22 +20,16 @@ function formatMoney(value) {
 
 function Reports() {
   const [bookings, setBookings] = useState([]);
-  const [supplierMap, setSupplierMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [rangeType, setRangeType] = useState("month");
-  const [customStart, setCustomStart] = useState(toDateStr(new Date()));
-  const [customEnd, setCustomEnd] = useState(toDateStr(new Date()));
+  const todayStr = toDateStr(new Date());
+  const [customStart, setCustomStart] = useState(todayStr);
+  const [customEnd, setCustomEnd] = useState(todayStr);
   const [includeProfit, setIncludeProfit] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      apiClient.get("/bookings"),
-      apiClient.get("/suppliers"),
-    ]).then(([bookingsRes, suppliersRes]) => {
-      setBookings(bookingsRes.data);
-      const map = {};
-      suppliersRes.data.forEach((s) => { map[s.id] = s.name; });
-      setSupplierMap(map);
+    apiClient.get("/bookings").then((res) => {
+      setBookings(res.data);
       setLoading(false);
     });
   }, []);
@@ -88,7 +85,7 @@ function Reports() {
       const row = [
         b.pnr_no,
         b.customer_name,
-        supplierMap[b.supplier_id] || "—",
+        b.supplier_name,
         b.date_of_travel || "—",
         formatMoney(b.cost_price),
         formatMoney(b.sale_amount),
@@ -136,8 +133,18 @@ function Reports() {
         </button>
         {rangeType === "custom" && (
           <>
-            <input type="date" value={customStart} onChange={(e) => setCustomStart(e.target.value)} />
-            <input type="date" value={customEnd} onChange={(e) => setCustomEnd(e.target.value)} />
+            <input
+              type="date"
+              value={customStart}
+              max={todayStr}
+              onChange={(e) => setCustomStart(e.target.value > todayStr ? todayStr : e.target.value)}
+            />
+            <input
+              type="date"
+              value={customEnd}
+              max={todayStr}
+              onChange={(e) => setCustomEnd(e.target.value > todayStr ? todayStr : e.target.value)}
+            />
           </>
         )}
         <label className={styles.toggle}>
@@ -145,6 +152,8 @@ function Reports() {
           Show profit column
         </label>
       </div>
+
+      <p className={styles.rangeDisplay}>Showing: {start} to {end}</p>
 
       <div className={styles.metrics}>
         <div className={styles.metricCard}>
@@ -203,7 +212,7 @@ function Reports() {
               <tr key={b.id}>
                 <td>{b.pnr_no}</td>
                 <td>{b.customer_name}</td>
-                <td>{supplierMap[b.supplier_id] || "—"}</td>
+                <td>{b.supplier_name}</td>
                 <td>{b.date_of_travel || "—"}</td>
                 <td className={styles.numCol}>{formatMoney(b.cost_price)}</td>
                 <td className={styles.numCol}>{formatMoney(b.sale_amount)}</td>

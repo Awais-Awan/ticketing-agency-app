@@ -11,6 +11,7 @@ def booking_to_response(booking: Booking) -> BookingResponse:
 
     return BookingResponse(
         id=booking.id,
+        customer_id=booking.customer_id,
         pnr_no=booking.pnr_no,
         customer_name=booking.customer.name,
         phone_number=booking.customer.phone,
@@ -29,4 +30,5 @@ def booking_to_response(booking: Booking) -> BookingResponse:
             for p in booking.payments
         ],
         created_at=booking.created_at,
+        supplier_name=booking.supplier.name,
     )

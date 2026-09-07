@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import apiClient from "../api/client";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
+import SearchInput from "../components/SearchInput";
 import styles from "./Suppliers.module.css";
 
 function Suppliers() {
@@ -10,6 +11,7 @@ function Suppliers() {
   const [loading, setLoading] = useState(true);
   const [formError, setFormError] = useState("");
   const [form, setForm] = useState({ name: "", email: "", phone: "", address: "" });
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     loadSuppliers();
@@ -38,6 +40,13 @@ function Suppliers() {
     }
   }
 
+  const query = search.trim().toLowerCase();
+  const filtered = suppliers.filter((s) =>
+    s.name.toLowerCase().includes(query) ||
+    (s.email || "").toLowerCase().includes(query) ||
+    (s.phone || "").toLowerCase().includes(query)
+  );
+
   return (
     <div>
       <h2 className={styles.pageTitle}>Suppliers</h2>
@@ -52,10 +61,16 @@ function Suppliers() {
 
       {formError && <p className={styles.formError}>{formError}</p>}
 
+      {!loading && suppliers.length > 0 && (
+        <SearchInput value={search} onChange={setSearch} placeholder="Search by name, email, or phone" />
+      )}
+
       {loading ? (
         <Spinner />
       ) : suppliers.length === 0 ? (
         <EmptyState message="No suppliers yet. Add one above to get started." />
+      ) : filtered.length === 0 ? (
+        <EmptyState message="No suppliers match your search." />
       ) : (
         <table className={styles.table}>
           <thead>
@@ -68,7 +83,7 @@ function Suppliers() {
             </tr>
           </thead>
           <tbody>
-            {suppliers.map((s) => (
+            {filtered.map((s) => (
               <tr key={s.id} className={styles.row}>
                 <td><Link to={`/suppliers/${s.id}`} className={styles.link}>{s.name}</Link></td>
                 <td>{s.email}</td>

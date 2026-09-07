@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import apiClient from "../api/client";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import styles from "./BookingDetail.module.css";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 function formatMoney(value) {
   return parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -176,7 +176,8 @@ function BookingDetail() {
       ) : (
         <div className={styles.card}>
           <div className={styles.detailGrid}>
-            <div><span className={styles.detailLabel}>Customer</span><span>{booking.customer_name}</span></div>
+            <div><span className={styles.detailLabel}>Customer</span><span><Link to={`/customers/${booking.customer_id}`} className={styles.link}>{booking.customer_name}</Link></span></div>
+            <div><span className={styles.detailLabel}>Supplier</span><span><Link to={`/suppliers/${booking.supplier_id}`} className={styles.link}>{booking.supplier_name}</Link></span></div>
             <div><span className={styles.detailLabel}>Phone</span><span>{booking.phone_number}</span></div>
             <div><span className={styles.detailLabel}>Sector</span><span>{booking.sector || "—"}</span></div>
             <div><span className={styles.detailLabel}>Date of travel</span><span>{booking.date_of_travel || "—"}</span></div>

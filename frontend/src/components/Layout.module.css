@@ -12,11 +12,23 @@
 }
 
 .brand {
-  color: white;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 25px 20px 50px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.brandName {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.brandPath {
+  display: block;
+  margin-left: 5px;
+  margin-top: 5px;
 }
 
 .nav {
