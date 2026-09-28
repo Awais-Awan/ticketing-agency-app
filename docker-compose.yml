@@ -1,4 +1,5 @@
 services:
+
   db:
     image: postgres:16
     restart: unless-stopped
@@ -28,6 +29,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: ticketing-frontend
+    restart: unless-stopped
     ports:
       - "3000:80"
     depends_on:
