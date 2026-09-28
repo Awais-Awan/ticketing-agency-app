@@ -23,5 +23,15 @@ services:
     volumes:
       - ./backend:/app
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ticketing-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
 volumes:
   db_data:
